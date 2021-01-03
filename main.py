@@ -94,15 +94,15 @@ class MainMatches(QtWidgets.QMainWindow, main_layout.Ui_MainWindow):
     def manager_turns(self):
         print("manager turns")
 
-        a = self.player1_turn()
-        self.player_line.setEnabled(True)
-        self.continue_btn.setEnabled(True)
-        self.player2_turn()
+        back = self.player1_turn()
+        if back == 1:
+            self._timer.singleShot(1000, lambda: self.player2_turn())
 
     def player1_turn(self):
         print("Ход 1")
         try:
             # ход первого игрока
+            self.author1_line.setText("Ходит первый игрок")
             self._timer.singleShot(2000, lambda: self.player_line.setPlaceholderText(
                 "Первый игрок, сколько Вы хотите взять спичек? (от 1 до 3)"))
 
@@ -127,6 +127,10 @@ class MainMatches(QtWidgets.QMainWindow, main_layout.Ui_MainWindow):
     def player2_turn(self):
         print("Ход 2")
         try:
+            self.author1_line.setText("Ходит второй игрок")
+            self._timer.singleShot(1000, lambda: self.player_line.setEnabled(True))
+            self._timer.singleShot(1000, lambda: self.continue_btn.setEnabled(True))
+
             # ход второго игрока
             self._timer.singleShot(2000, lambda: self.player_line.setPlaceholderText(
                 "Второй игрок, сколько Вы хотите взять спичек? (от 1 до 3)"))
