@@ -69,7 +69,7 @@ class MainMatches(QtWidgets.QMainWindow, main_layout.Ui_MainWindow):
         self._timer.singleShot(4000, lambda: self.author2_line.setText(" Нажмите кнопку Продолжить"))
         self._timer.singleShot(4500, lambda: self.continue_btn.setEnabled(True))
 
-        self.continue_btn.clicked.connect(self.manager_windows)
+        self.continue_btn.clicked.connect(self.first_launch)
 
         # Главные константы игры
         self.start = 0
@@ -81,19 +81,29 @@ class MainMatches(QtWidgets.QMainWindow, main_layout.Ui_MainWindow):
         self.player1_take_matches = 0
         self.player2_take_matches = 0
 
-    def manager_windows(self):
+    def first_launch(self):
         self.player_line.setEnabled(True)
         self.player_line.setFocus()
-        print("Да")
-        self._timer.singleShot(1000, self.starting)
+        print("first launch")
 
-        self.player1_turn()
+        self.continue_btn.clicked.disconnect(self.first_launch)
+        self.continue_btn.clicked.connect(self.manager_turns)
+
+        self.manager_turns()
+
+    def manager_turns(self):
+        print("manager turns")
+
+        a = self.player1_turn()
+        self.player_line.setEnabled(True)
+        self.continue_btn.setEnabled(True)
         self.player2_turn()
 
     def player1_turn(self):
+        print("Ход 1")
         try:
             # ход первого игрока
-            self._timer.singleShot(4300, lambda: self.player_line.setPlaceholderText(
+            self._timer.singleShot(2000, lambda: self.player_line.setPlaceholderText(
                 "Первый игрок, сколько Вы хотите взять спичек? (от 1 до 3)"))
 
             self.player1_take_matches = int(self.player_line.text())
@@ -106,21 +116,7 @@ class MainMatches(QtWidgets.QMainWindow, main_layout.Ui_MainWindow):
             self.author2_line.setText(f" Ход сделан - {self.player1_take_matches} спичк{self.ending}")
             self.player_line.setDisabled(True)
             self.continue_btn.setDisabled(True)
-
-            # self.chose_matches = self.chose_matches - self.player1_take_matches
-            # if self.chose_matches <= 0:
-            #     print("Проигрышь 1")
-            #
-            # print(f"Количество спичек - {self.chose_matches}")
-            # print("==== Ходит второй игрок ====")
-            # self.player2_take_matches = int(input("Второй игрок, сколько Вы хотите взять спичек? (от 1 до 3): "))
-            # self.range_take_matches(2)
-            # self.chose_matches = self.chose_matches - self.player2_take_matches
-            # if self.chose_matches <= 0:
-            #     print("Проигрышь 2")
-            #
-            # print("==== Ход сделан ====")
-            # print(f"Количество спичек - {self.chose_matches}")
+            return 1
 
         except ValueError:
             self.player_line.setText("Введённые данные неправильны")
@@ -129,9 +125,10 @@ class MainMatches(QtWidgets.QMainWindow, main_layout.Ui_MainWindow):
             self._timer.singleShot(2000, lambda: self.player_line.setStyleSheet('color: black'))
 
     def player2_turn(self):
+        print("Ход 2")
         try:
             # ход второго игрока
-            self._timer.singleShot(4300, lambda: self.player_line.setPlaceholderText(
+            self._timer.singleShot(2000, lambda: self.player_line.setPlaceholderText(
                 "Второй игрок, сколько Вы хотите взять спичек? (от 1 до 3)"))
 
             self.player2_take_matches = int(self.player_line.text())
@@ -192,14 +189,12 @@ class MainMatches(QtWidgets.QMainWindow, main_layout.Ui_MainWindow):
             print("==== Ход сделан ====")
             print(f"Количество спичек - {self.quantity_matches}")
 
-
     def check_ending(self):
         if self.player1_take_matches == 1:
             self.ending = "а"
 
         else:
             self.ending = "и"
-
 
     def starting(self):
         self.start = 1
