@@ -114,6 +114,8 @@ class MainMatches(QtWidgets.QMainWindow, main_layout.Ui_MainWindow):
                     self.quantity_matches = self.quantity_matches - self.player1_take_matches
                     # self.author2_line.setText(f" Ход сделан - {self.player1_take_matches} спичк{self.ending}")
                     self.player_line.clear()
+                    if self.player_line.text() == "":
+                        pass
                     self.player_line.setDisabled(True)
                     self.continue_btn.setDisabled(True)
 
@@ -150,12 +152,17 @@ class MainMatches(QtWidgets.QMainWindow, main_layout.Ui_MainWindow):
                 if self.player2_take_matches > 3 or self.player2_take_matches < 1:
                     raise ValueError
 
+                elif self.player_line == "":
+                    print("Пусто")
+
                 else:
                     self.check_ending()
 
                     self.quantity_matches = self.quantity_matches - self.player2_take_matches
                     # self.author2_line.setText(f" Ход сделан - {self.player2_take_matches} спичк{self.ending}")
                     self.player_line.clear()
+                    if self.player_line.text() == "":
+                        pass
                     self.player_line.setDisabled(True)
                     self.continue_btn.setDisabled(True)
 
