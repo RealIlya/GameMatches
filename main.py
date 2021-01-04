@@ -10,11 +10,10 @@ import main_layout
 class StartMatches(QtWidgets.QMainWindow, start_layout.Ui_MainWindow):
     def __init__(self):
         super().__init__()
-
         self._timer = QtCore.QTimer
         self.setupUi(self)
+
         self.continue_btn.clicked.connect(self.data_matches)
-        self.continue_btn.clicked.connect(self.close_start_app)
 
         self.quantity_matches = 0
         self.AI_or_player = None
@@ -46,10 +45,8 @@ class StartMatches(QtWidgets.QMainWindow, start_layout.Ui_MainWindow):
             self._timer.singleShot(2000, lambda: self.AI_or_player_line.clear())
             self._timer.singleShot(2000, lambda: self.max_matches_line.setStyleSheet('color: black'))
             self._timer.singleShot(2000, lambda: self.AI_or_player_line.setStyleSheet('color: black'))
-
-    def close_start_app(self):
-        start_app = StartMatches()
-        start_app.close()
+            self.max_matches_line.setMaxLength(2)
+            self.AI_or_player_line.setMaxLength(1)
 
 
 # Данный класс отвечает за второе (основное) окно
@@ -70,58 +67,48 @@ class MainMatches(QtWidgets.QMainWindow, main_layout.Ui_MainWindow):
 
         self.continue_btn.clicked.connect(self.first_launch)
 
-        # Главные константы игры
-        self.start = 0
-        self.max_matches = 20
-        self.max_take_matches = 3
-
+        # Главные переменные игры
         self.quantity_matches = quantity_matches
         self.AI_or_player = ai_or_player
         self.player1_take_matches = 0
         self.player2_take_matches = 0
+        self.ending = None
 
+    # Первый запуск игры
     def first_launch(self):
         self.player_line.setEnabled(True)
         self.player_line.setFocus()
+        self.player_line.setPlaceholderText("Первый игрок, сколько Вы хотите взять спичек? (от 1 до 3)")
         print("first launch")
 
         self.continue_btn.clicked.disconnect(self.first_launch)
         self.continue_btn.clicked.connect(self.player1_turn)
 
-    def manager_turns(self):
-        print("manager turns")
-
-        self.back = self.player1_turn()
-        if self.back == 1:
-            self._timer.singleShot(1000, lambda: self.player2_turn())
-
+    # Ход первого игрока
     def player1_turn(self):
-        print("Ход 1")
+        # игра продолжается, пока quantity_matches > 0
         if self.quantity_matches > 0:
             try:
-                # ход первого игрока
                 self.author1_line.setText(" Ходит первый игрок")
                 self.author2_line.clear()
                 self.player_line.setPlaceholderText("Первый игрок, сколько Вы хотите взять спичек? (от 1 до 3)")
 
-                self.player1_take_matches = int(self.player_line.text())
-                if self.player1_take_matches > 3 or self.player1_take_matches < 1:
-                    raise ValueError
+                if self.player_line.text() != "":
+                    self.player1_take_matches = int(self.player_line.text())
 
-                else:
-                    self.check_ending()
+                    if self.player1_take_matches > 3 or self.player1_take_matches < 1:
+                        raise ValueError
+                    else:
+                        self.check_ending()
 
-                    self.quantity_matches = self.quantity_matches - self.player1_take_matches
-                    # self.author2_line.setText(f" Ход сделан - {self.player1_take_matches} спичк{self.ending}")
-                    self.player_line.clear()
-                    if self.player_line.text() == "":
-                        pass
-                    self.player_line.setDisabled(True)
-                    self.continue_btn.setDisabled(True)
+                        self.quantity_matches = self.quantity_matches - self.player1_take_matches
+                        self.player_line.clear()
+                        self.player_line.setDisabled(True)
+                        self.continue_btn.setDisabled(True)
 
-                    self.continue_btn.clicked.disconnect(self.player1_turn)
-                    self.continue_btn.clicked.connect(self.player2_turn)
-                    self.player2_turn()
+                        self.continue_btn.clicked.disconnect(self.player1_turn)
+                        self.continue_btn.clicked.connect(self.player2_turn)
+                        self.player2_turn()
 
             except ValueError:
                 self.player_line.setText("Введённые данные неправильны")
@@ -130,45 +117,41 @@ class MainMatches(QtWidgets.QMainWindow, main_layout.Ui_MainWindow):
                 self._timer.singleShot(2000, lambda: self.player_line.setStyleSheet('color: black'))
 
             finally:
-                print(self.quantity_matches)
+                pass
 
+        # проигрышь первого игрока, выигрышь второго игрока
         else:
             self.author1_line.setText(" Выиграл второй игрок")
             self.author2_line.setText(" Хотите начать заново?")
             self.player_line.setPlaceholderText("")
+            self.continue_btn.setText("Перезапустить")
 
+    # Ход второго игрока
     def player2_turn(self):
-        print("Ход 2")
+        # игра продолжается, пока quantity_matches > 0
         if self.quantity_matches > 0:
             try:
                 self.author1_line.setText(" Ходит второй игрок")
-                self._timer.singleShot(1000, lambda: self.player_line.setEnabled(True))
-                self._timer.singleShot(1000, lambda: self.continue_btn.setEnabled(True))
-
-                # ход второго игрока
+                self._timer.singleShot(500, lambda: self.player_line.setEnabled(True))
+                self._timer.singleShot(500, lambda: self.continue_btn.setEnabled(True))
                 self.player_line.setPlaceholderText("Второй игрок, сколько Вы хотите взять спичек? (от 1 до 3)")
 
-                self.player2_take_matches = int(self.player_line.text())
-                if self.player2_take_matches > 3 or self.player2_take_matches < 1:
-                    raise ValueError
+                if self.player_line.text() != "":
+                    self.player2_take_matches = int(self.player_line.text())
 
-                elif self.player_line == "":
-                    print("Пусто")
+                    if self.player2_take_matches > 3 or self.player2_take_matches < 1:
+                        raise ValueError
+                    else:
+                        self.check_ending()
 
-                else:
-                    self.check_ending()
+                        self.quantity_matches = self.quantity_matches - self.player2_take_matches
+                        self.player_line.clear()
+                        self.player_line.setDisabled(True)
+                        self.continue_btn.setDisabled(True)
 
-                    self.quantity_matches = self.quantity_matches - self.player2_take_matches
-                    # self.author2_line.setText(f" Ход сделан - {self.player2_take_matches} спичк{self.ending}")
-                    self.player_line.clear()
-                    if self.player_line.text() == "":
-                        pass
-                    self.player_line.setDisabled(True)
-                    self.continue_btn.setDisabled(True)
-
-                    self.continue_btn.clicked.disconnect(self.player2_turn)
-                    self.continue_btn.clicked.connect(self.player1_turn)
-                    self.player1_turn()
+                        self.continue_btn.clicked.disconnect(self.player2_turn)
+                        self.continue_btn.clicked.connect(self.player1_turn)
+                        self.player1_turn()
 
             except ValueError:
                 self.player_line.setText("Введённые данные неправильны")
@@ -177,22 +160,20 @@ class MainMatches(QtWidgets.QMainWindow, main_layout.Ui_MainWindow):
                 self._timer.singleShot(2000, lambda: self.player_line.setStyleSheet('color: black'))
 
             finally:
-                print(self.quantity_matches)
+                pass
 
+        # проигрышь второго игрока, выигрышь первого игрока
         else:
             self.author1_line.setText(" Выиграл первый игрок")
             self.author2_line.setText(" Хотите начать заново?")
             self.player_line.setPlaceholderText("")
+            self.continue_btn.setText("Перезапустить")
 
     def check_ending(self):
         if self.player1_take_matches == 1:
             self.ending = "а"
-
         else:
             self.ending = "и"
-
-    def starting(self):
-        self.start = 1
 
 
 def main():
