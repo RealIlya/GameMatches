@@ -151,7 +151,8 @@ class Ui_MainWindow(object):
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
-        self.max_matches_line.setPlaceholderText(_translate("MainWindow", "Максимальное количество спичек в игре (от 6 до 20)"))
+        self.max_matches_line.setPlaceholderText(
+            _translate("MainWindow", "Максимальное количество спичек в игре (от 6 до 20)"))
         self.AI_or_player_line.setPlaceholderText(_translate("MainWindow", "Против кого играть (0 - ИИ, 1 - игрок)"))
         self.continue_btn.setText(_translate("MainWindow", "Продолжить"))
         self.continue_btn.setShortcut(_translate("MainWindow", "F"))
