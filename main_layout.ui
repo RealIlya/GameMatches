@@ -1093,6 +1093,127 @@
         <enum>Qt::Horizontal</enum>
        </property>
       </widget>
+      <widget class="QPushButton" name="restart_btn">
+       <property name="geometry">
+        <rect>
+         <x>55</x>
+         <y>170</y>
+         <width>201</width>
+         <height>30</height>
+        </rect>
+       </property>
+       <property name="palette">
+        <palette>
+         <active>
+          <colorrole role="ButtonText">
+           <brush brushstyle="SolidPattern">
+            <color alpha="255">
+             <red>118</red>
+             <green>118</green>
+             <blue>118</blue>
+            </color>
+           </brush>
+          </colorrole>
+         </active>
+         <inactive>
+          <colorrole role="ButtonText">
+           <brush brushstyle="SolidPattern">
+            <color alpha="255">
+             <red>118</red>
+             <green>118</green>
+             <blue>118</blue>
+            </color>
+           </brush>
+          </colorrole>
+         </inactive>
+         <disabled>
+          <colorrole role="ButtonText">
+           <brush brushstyle="SolidPattern">
+            <color alpha="255">
+             <red>120</red>
+             <green>120</green>
+             <blue>120</blue>
+            </color>
+           </brush>
+          </colorrole>
+         </disabled>
+        </palette>
+       </property>
+       <property name="font">
+        <font>
+         <family>Arial</family>
+         <pointsize>14</pointsize>
+         <weight>50</weight>
+         <bold>false</bold>
+        </font>
+       </property>
+       <property name="text">
+        <string>Перезапуск</string>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="exit_btn">
+       <property name="geometry">
+        <rect>
+         <x>325</x>
+         <y>170</y>
+         <width>201</width>
+         <height>30</height>
+        </rect>
+       </property>
+       <property name="palette">
+        <palette>
+         <active>
+          <colorrole role="ButtonText">
+           <brush brushstyle="SolidPattern">
+            <color alpha="255">
+             <red>118</red>
+             <green>118</green>
+             <blue>118</blue>
+            </color>
+           </brush>
+          </colorrole>
+         </active>
+         <inactive>
+          <colorrole role="ButtonText">
+           <brush brushstyle="SolidPattern">
+            <color alpha="255">
+             <red>118</red>
+             <green>118</green>
+             <blue>118</blue>
+            </color>
+           </brush>
+          </colorrole>
+         </inactive>
+         <disabled>
+          <colorrole role="ButtonText">
+           <brush brushstyle="SolidPattern">
+            <color alpha="255">
+             <red>120</red>
+             <green>120</green>
+             <blue>120</blue>
+            </color>
+           </brush>
+          </colorrole>
+         </disabled>
+        </palette>
+       </property>
+       <property name="font">
+        <font>
+         <family>Arial</family>
+         <pointsize>14</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>Выйти</string>
+       </property>
+      </widget>
+      <zorder>continue_btn</zorder>
+      <zorder>author1_line</zorder>
+      <zorder>author2_line</zorder>
+      <zorder>player_line</zorder>
+      <zorder>decorLine</zorder>
+      <zorder>restart_btn</zorder>
+      <zorder>exit_btn</zorder>
      </widget>
     </item>
    </layout>

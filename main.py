@@ -5,9 +5,33 @@ from PyQt5 import QtCore
 import start_layout
 import main_layout
 
+# TODO сделать перезапуск игры
+# TODO сделать логи
+# TODO сделать закрытие первого окна
+
+
+class ManagerWindows:
+    def __init__(self):
+        self.start_app = QtWidgets.QApplication(sys.argv)
+        self.main_app = QtWidgets.QApplication(sys.argv)
+        self.start_window = StartMatches()
+        self.main_window = MainMatches(None, None)
+
+    def show_window1(self):
+        self.start_window.show()
+
+    def close_window1(self):
+        pass
+
+    def show_window2(self):
+        pass
+
+    def close_window2(self):
+        pass
+
 
 # Данный класс отвечает за первое (начальное) окно
-class StartMatches(QtWidgets.QMainWindow, start_layout.Ui_MainWindow):
+class StartMatches(ManagerWindows, QtWidgets.QMainWindow, start_layout.Ui_MainWindow):
     def __init__(self):
         super().__init__()
         self._timer = QtCore.QTimer
@@ -30,8 +54,8 @@ class StartMatches(QtWidgets.QMainWindow, start_layout.Ui_MainWindow):
             elif self.AI_or_player > 1 or self.AI_or_player < 0:
                 raise ValueError
 
-            self.main_app = MainMatches(self.quantity_matches, self.AI_or_player)
-            self.main_app.show()
+            self.main_window = MainMatches(self.quantity_matches, self.AI_or_player)
+            self.main_window.show()
 
         # блок обработки неправильных введённых данных
         except ValueError:
@@ -45,12 +69,12 @@ class StartMatches(QtWidgets.QMainWindow, start_layout.Ui_MainWindow):
             self._timer.singleShot(2000, lambda: self.AI_or_player_line.clear())
             self._timer.singleShot(2000, lambda: self.max_matches_line.setStyleSheet('color: black'))
             self._timer.singleShot(2000, lambda: self.AI_or_player_line.setStyleSheet('color: black'))
-            self.max_matches_line.setMaxLength(2)
-            self.AI_or_player_line.setMaxLength(1)
+            self._timer.singleShot(2000, lambda: self.max_matches_line.setMaxLength(2))
+            self._timer.singleShot(2000, lambda: self.AI_or_player_line.setMaxLength(1))
 
 
 # Данный класс отвечает за второе (основное) окно
-class MainMatches(QtWidgets.QMainWindow, main_layout.Ui_MainWindow):
+class MainMatches(ManagerWindows, QtWidgets.QMainWindow, main_layout.Ui_MainWindow):
     def __init__(self, quantity_matches, ai_or_player):
         super().__init__()
         self._timer = QtCore.QTimer
@@ -66,6 +90,11 @@ class MainMatches(QtWidgets.QMainWindow, main_layout.Ui_MainWindow):
         self._timer.singleShot(2000, lambda: self.continue_btn.setEnabled(True))
 
         self.continue_btn.clicked.connect(self.first_launch)
+
+        self.restart_btn.clicked.connect(self.restart_game)
+        self.exit_btn.clicked.connect(exit)
+        self.restart_btn.setVisible(False)
+        self.exit_btn.setVisible(False)
 
         # Главные переменные игры
         self.quantity_matches = quantity_matches
@@ -90,7 +119,8 @@ class MainMatches(QtWidgets.QMainWindow, main_layout.Ui_MainWindow):
         if self.quantity_matches > 0:
             try:
                 self.author1_line.setText(" Ходит первый игрок")
-                self.author2_line.clear()
+                self.author2_line.setText(" Осталось спичек - {0}".format(self.quantity_matches))
+
                 self.player_line.setPlaceholderText("Первый игрок, сколько Вы хотите взять спичек? (от 1 до 3)")
 
                 if self.player_line.text() != "":
@@ -103,7 +133,6 @@ class MainMatches(QtWidgets.QMainWindow, main_layout.Ui_MainWindow):
 
                         self.quantity_matches = self.quantity_matches - self.player1_take_matches
                         self.player_line.clear()
-                        self.player_line.setDisabled(True)
                         self.continue_btn.setDisabled(True)
 
                         self.continue_btn.clicked.disconnect(self.player1_turn)
@@ -121,10 +150,7 @@ class MainMatches(QtWidgets.QMainWindow, main_layout.Ui_MainWindow):
 
         # проигрышь первого игрока, выигрышь второго игрока
         else:
-            self.author1_line.setText(" Выиграл второй игрок")
-            self.author2_line.setText(" Хотите начать заново?")
-            self.player_line.setPlaceholderText("")
-            self.continue_btn.setText("Перезапустить")
+            self.end_game(1)
 
     # Ход второго игрока
     def player2_turn(self):
@@ -132,7 +158,9 @@ class MainMatches(QtWidgets.QMainWindow, main_layout.Ui_MainWindow):
         if self.quantity_matches > 0:
             try:
                 self.author1_line.setText(" Ходит второй игрок")
-                self._timer.singleShot(500, lambda: self.player_line.setEnabled(True))
+                self.author2_line.setText(" Осталось спичек - {0}".format(self.quantity_matches))
+
+                self._timer.singleShot(500, lambda: self.player_line.setFocus())
                 self._timer.singleShot(500, lambda: self.continue_btn.setEnabled(True))
                 self.player_line.setPlaceholderText("Второй игрок, сколько Вы хотите взять спичек? (от 1 до 3)")
 
@@ -146,7 +174,6 @@ class MainMatches(QtWidgets.QMainWindow, main_layout.Ui_MainWindow):
 
                         self.quantity_matches = self.quantity_matches - self.player2_take_matches
                         self.player_line.clear()
-                        self.player_line.setDisabled(True)
                         self.continue_btn.setDisabled(True)
 
                         self.continue_btn.clicked.disconnect(self.player2_turn)
@@ -164,10 +191,7 @@ class MainMatches(QtWidgets.QMainWindow, main_layout.Ui_MainWindow):
 
         # проигрышь второго игрока, выигрышь первого игрока
         else:
-            self.author1_line.setText(" Выиграл первый игрок")
-            self.author2_line.setText(" Хотите начать заново?")
-            self.player_line.setPlaceholderText("")
-            self.continue_btn.setText("Перезапустить")
+            self.end_game(2)
 
     def check_ending(self):
         if self.player1_take_matches == 1:
@@ -175,12 +199,33 @@ class MainMatches(QtWidgets.QMainWindow, main_layout.Ui_MainWindow):
         else:
             self.ending = "и"
 
+    def end_game(self, player):
+        if player == 1:
+            self.author1_line.setText(" Выиграл первый игрок")
+            self.continue_btn.clicked.disconnect(self.player1_turn)
+        elif player == 2:
+            self.author1_line.setText(" Выиграл второй игрок")
+            self.continue_btn.clicked.disconnect(self.player2_turn)
+
+        self.author2_line.setText(" Хотите начать заново?")
+        self.player_line.setPlaceholderText("")
+        self.player_line.setDisabled(True)
+
+        self.continue_btn.setVisible(False)
+
+        self.restart_btn.setVisible(True)
+        self.exit_btn.setVisible(True)
+
+    def restart_game(self):
+        self.start_window = StartMatches()
+        self.start_window.show()
+
 
 def main():
-    start_app = QtWidgets.QApplication(sys.argv)
-    start_window = StartMatches()
-    start_window.show()
-    sys.exit(start_app.exec_())
+
+    manager_windows = ManagerWindows()
+    manager_windows.show_window1()
+    sys.exit(manager_windows)
 
 
 if __name__ == '__main__':
