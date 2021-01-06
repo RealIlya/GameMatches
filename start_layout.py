@@ -49,7 +49,6 @@ class Ui_MainWindow(object):
         self.max_matches_line.setInputMethodHints(QtCore.Qt.ImhNone)
         self.max_matches_line.setInputMask("")
         self.max_matches_line.setText("")
-        self.max_matches_line.setMaxLength(2)
         self.max_matches_line.setFrame(True)
         self.max_matches_line.setEchoMode(QtWidgets.QLineEdit.Normal)
         self.max_matches_line.setCursorPosition(0)
@@ -69,7 +68,6 @@ class Ui_MainWindow(object):
         font.setWeight(50)
         font.setStyleStrategy(QtGui.QFont.PreferDefault)
         self.AI_or_player_line.setFont(font)
-        self.AI_or_player_line.setMaxLength(1)
         self.AI_or_player_line.setObjectName("AI_or_player_line")
         self.decorLine = QtWidgets.QFrame(self.frame)
         self.decorLine.setWindowModality(QtCore.Qt.NonModal)
@@ -151,8 +149,7 @@ class Ui_MainWindow(object):
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
-        self.max_matches_line.setPlaceholderText(
-            _translate("MainWindow", "Максимальное количество спичек в игре (от 6 до 20)"))
+        self.max_matches_line.setPlaceholderText(_translate("MainWindow", "Максимальное количество спичек в игре (от 6 до 20)"))
         self.AI_or_player_line.setPlaceholderText(_translate("MainWindow", "Против кого играть (0 - ИИ, 1 - игрок)"))
         self.continue_btn.setText(_translate("MainWindow", "Продолжить"))
         self.continue_btn.setShortcut(_translate("MainWindow", "F"))
