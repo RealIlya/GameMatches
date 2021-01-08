@@ -4,8 +4,6 @@ from PyQt5 import QtCore
 from PyQt5.QtGui import QIcon
 
 import start_layout
-import PVP
-import PVE
 
 version = "v1.0.2 BETA"
 
@@ -37,11 +35,13 @@ class StartWin(QtWidgets.QMainWindow, start_layout.Ui_MainWindow):
 
             self.close()  # закрытие StartWin
             if self.AI_or_player == 0:
-                self.main_win_pve = PVE.MainWinPVE(self.quantity_matches
-                                                   )
+                import PVE
+                self.main_win_pve = PVE.MainWinPVE(self.quantity_matches  # создание экземпляра класса MainWinPVE с
+                                                   )  # данными о выборах игрока
                 self.main_win_pve.show()
 
             if self.AI_or_player == 1:
+                import PVP
                 self.main_win_pvp = PVP.MainWinPVP(self.quantity_matches  # создание экземпляра класса MainWinPVP с
                                                    )  # данными о выборах игрока
                 self.main_win_pvp.show()  # показ main_win_pvp

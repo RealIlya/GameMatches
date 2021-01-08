@@ -15,7 +15,7 @@ class MainWinPVE(QtWidgets.QMainWindow, main_layout.Ui_MainWindow):
         self.continue_btn.setDisabled(True)
         self.author1_line.setStyleSheet('color: rgb(240, 240, 240)')
         self.author1_line.setText(" Приветствую Вас в моей игре -Спички-")
-        self.author2_line.setText(" Вы играете против игрока")
+        self.author2_line.setText(" Вы играете против ИИ")
         self._timer.singleShot(2000, lambda: self.author1_line.clear())
         self._timer.singleShot(2000, lambda: self.author2_line.setText(" И так, начнём игру"))
 
@@ -84,7 +84,7 @@ class MainWinPVE(QtWidgets.QMainWindow, main_layout.Ui_MainWindow):
         # игра продолжается, пока quantity_matches > 0
         if self.quantity_matches > 0:
             try:
-                self.author1_line.setText(" Ходит второй игрок")
+                self.author1_line.setText(" Ходит бот")
                 self.author2_line.setText(" Осталось спичек - {0}".format(self.quantity_matches))
 
                 self._timer.singleShot(500, lambda: self.player_line.setFocus())
