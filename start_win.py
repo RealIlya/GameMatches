@@ -5,7 +5,7 @@ from PyQt5.QtGui import QIcon
 
 import start_layout
 
-version = "v1.0.2 BETA"
+version = "v1.1"
 
 
 # Данный класс отвечает за первое (начальное) окно

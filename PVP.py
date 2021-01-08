@@ -2,7 +2,7 @@ import main_layout
 from start_win import *
 
 
-# Данный класс отвечает за второе окно, игра идёт против игрока
+# Данный класс отвечает за второе окно, игра идёт против Игрока
 class MainWinPVP(QtWidgets.QMainWindow, main_layout.Ui_MainWindow):
     def __init__(self, quantity_matches):
         super().__init__()
@@ -15,7 +15,7 @@ class MainWinPVP(QtWidgets.QMainWindow, main_layout.Ui_MainWindow):
         self.continue_btn.setDisabled(True)
         self.author1_line.setStyleSheet('color: rgb(240, 240, 240)')
         self.author1_line.setText(" Приветствую Вас в моей игре -Спички-")
-        self.author2_line.setText(" Вы играете против игрока")
+        self.author2_line.setText(" Режим игры - «Против Игрока»")
         self._timer.singleShot(2000, lambda: self.author1_line.clear())
         self._timer.singleShot(2000, lambda: self.author2_line.setText(" И так, начнём игру"))
 
@@ -43,7 +43,7 @@ class MainWinPVP(QtWidgets.QMainWindow, main_layout.Ui_MainWindow):
         self.continue_btn.clicked.disconnect(self.first_launch)
         self.continue_btn.clicked.connect(self.player1_turn)
 
-    # Ход первого игрока
+    # Ход Первого Игрока
     def player1_turn(self):
         # игра продолжается, пока quantity_matches > 0
         if self.quantity_matches > 0:
@@ -53,7 +53,7 @@ class MainWinPVP(QtWidgets.QMainWindow, main_layout.Ui_MainWindow):
 
                 self.player_line.setPlaceholderText("Первый игрок, сколько Вы хотите взять спичек? (от 1 до 3)")
 
-                # если строчка не пуста, то взятые игроком спички отнимаются от их общего числа
+                # если строчка не пуста, то взятые Первым Игроком спички отнимаются от их общего числа
                 if self.player_line.text() != "":
                     self.player1_take_matches = int(self.player_line.text())
 
@@ -64,7 +64,7 @@ class MainWinPVP(QtWidgets.QMainWindow, main_layout.Ui_MainWindow):
                         self.player_line.clear()
                         self.continue_btn.setDisabled(True)
 
-                        # конец хода 1 игрока
+                        # конец хода Первого Игрока
                         self.continue_btn.clicked.disconnect(self.player1_turn)  # кнопка отключается от player1_turn
                         self.continue_btn.clicked.connect(self.player2_turn)  # кнопка подключается к player2_turn
                         self.player2_turn()  # вызывается player2_turn
@@ -73,11 +73,11 @@ class MainWinPVP(QtWidgets.QMainWindow, main_layout.Ui_MainWindow):
             except ValueError:
                 self.exception_handling()
 
-        # проигрышь первого игрока, выигрышь второго игрока
+        # проигрышь Второго Игрока, выигрышь Первого Игрока
         else:
             self.end_game(1)
 
-    # Ход второго игрока
+    # Ход Второго Игрока
     def player2_turn(self):
         # игра продолжается, пока quantity_matches > 0
         if self.quantity_matches > 0:
@@ -89,7 +89,7 @@ class MainWinPVP(QtWidgets.QMainWindow, main_layout.Ui_MainWindow):
                 self._timer.singleShot(500, lambda: self.continue_btn.setEnabled(True))
                 self.player_line.setPlaceholderText("Второй игрок, сколько Вы хотите взять спичек? (от 1 до 3)")
 
-                # если строчка не пуста, то взятые игроком спички отнимаются от их общего числа
+                # если строчка не пуста, то взятые Вторым Игроком спички отнимаются от их общего числа
                 if self.player_line.text() != "":
                     self.player2_take_matches = int(self.player_line.text())
 
@@ -100,6 +100,7 @@ class MainWinPVP(QtWidgets.QMainWindow, main_layout.Ui_MainWindow):
                         self.player_line.clear()
                         self.continue_btn.setDisabled(True)
 
+                        # конец хода Второго Игрока
                         self.continue_btn.clicked.disconnect(self.player2_turn)  # кнопка отключается от player2_turn
                         self.continue_btn.clicked.connect(self.player1_turn)  # кнопка подключается к player1_turn
                         self.player1_turn()  # вызывается player1_turn
@@ -108,7 +109,7 @@ class MainWinPVP(QtWidgets.QMainWindow, main_layout.Ui_MainWindow):
             except ValueError:
                 self.exception_handling()
 
-        # проигрышь второго игрока, выигрышь первого игрока
+        # проигрышь Первого Игрока, выигрышь Второго Игрока
         else:
             self.end_game(2)
 
@@ -116,10 +117,8 @@ class MainWinPVP(QtWidgets.QMainWindow, main_layout.Ui_MainWindow):
     def end_game(self, player):
         if player == 1:
             self.author1_line.setText(" Выиграл первый игрок")
-            self.continue_btn.clicked.disconnect(self.player1_turn)
         elif player == 2:
             self.author1_line.setText(" Выиграл второй игрок")
-            self.continue_btn.clicked.disconnect(self.player2_turn)
 
         self.author2_line.setText(" Хотите начать заново?")
         self.player_line.setPlaceholderText("")
