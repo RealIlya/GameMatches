@@ -31,8 +31,8 @@ class MainWinPVE(QtWidgets.QMainWindow, main_layout.Ui_MainWindow):
 
         # Главные переменные игры
         self.quantity_matches = quantity_matches
-        self.player1_take_matches = 0
-        self.player2_take_matches = 0
+        self.player_take_matches = 0
+        self.bot_take_matches = 0
 
     # Первый запуск игры
     def first_launch(self):
@@ -52,15 +52,16 @@ class MainWinPVE(QtWidgets.QMainWindow, main_layout.Ui_MainWindow):
                 self.author2_line.setText(" Осталось спичек - {0}".format(self.quantity_matches))
 
                 self.player_line.setPlaceholderText("Первый игрок, сколько Вы хотите взять спичек? (от 1 до 3)")
+                self.player_line.setEnabled(True)
 
                 # если строчка не пуста, то взятые игроком спички отнимаются от их общего числа
                 if self.player_line.text() != "":
-                    self.player1_take_matches = int(self.player_line.text())
+                    self.player_take_matches = int(self.player_line.text())
 
-                    if self.player1_take_matches > 3 or self.player1_take_matches < 1:
+                    if self.player_take_matches > 3 or self.player_take_matches < 1:
                         raise ValueError
                     else:
-                        self.quantity_matches = self.quantity_matches - self.player1_take_matches
+                        self.quantity_matches = self.quantity_matches - self.player_take_matches
                         self.player_line.clear()
                         self.continue_btn.setDisabled(True)
 
@@ -79,6 +80,7 @@ class MainWinPVE(QtWidgets.QMainWindow, main_layout.Ui_MainWindow):
 
     # Ход второго игрока
     def bot_turn(self):
+        quantity_matches = self.quantity_matches
         # игра продолжается, пока quantity_matches > 0
         if self.quantity_matches > 0:
             try:
@@ -87,18 +89,37 @@ class MainWinPVE(QtWidgets.QMainWindow, main_layout.Ui_MainWindow):
 
                 self._timer.singleShot(500, lambda: self.player_line.setFocus())
                 self._timer.singleShot(500, lambda: self.continue_btn.setEnabled(True))
-                self.player_line.setPlaceholderText("Второй игрок, сколько Вы хотите взять спичек? (от 1 до 3)")
+                self.player_line.setPlaceholderText("Бот делает ход...")
+                self.player_line.setDisabled(True)
+
+                turns = [3, 2, 1]
+                bot_take_matches = 0
+                result_list = list()
+
+                for i in turns:
+                    bot_take_matches = bot_take_matches + quantity_matches // i
+                    quantity_matches = quantity_matches % i
+                    result_list.append(bot_take_matches)
+
+                bot_take_matches //= 2
+                print(bot_take_matches)
+
+                if bot_take_matches == 0:
+                    bot_take_matches = 1
+
+                self.bot_take_matches = bot_take_matches
+
+                self.player_line.setText(str(self.bot_take_matches))
 
                 # если строчка не пуста, то взятые игроком спички отнимаются от их общего числа
                 if self.player_line.text() != "":
-                    self.player2_take_matches = int(self.player_line.text())
-
-                    if self.player2_take_matches > 3 or self.player2_take_matches < 1:
+                    if self.bot_take_matches > 3 or self.bot_take_matches < 1:
                         raise ValueError
                     else:
-                        self.quantity_matches = self.quantity_matches - self.player2_take_matches
+                        self.quantity_matches = self.quantity_matches - self.bot_take_matches
                         self.player_line.clear()
                         self.continue_btn.setDisabled(True)
+                        self.continue_btn.click()
 
                         self.continue_btn.clicked.disconnect(self.bot_turn)  # кнопка отключается от bot_turn
                         self.continue_btn.clicked.connect(self.player_turn)  # кнопка подключается к player_turn
@@ -115,10 +136,10 @@ class MainWinPVE(QtWidgets.QMainWindow, main_layout.Ui_MainWindow):
     # Подведение итогов
     def end_game(self, player):
         if player == 1:
-            self.author1_line.setText(" Выиграл первый игрок")
+            self.author1_line.setText(" Выиграл игрок")
             self.continue_btn.clicked.disconnect(self.player_turn)
         elif player == 2:
-            self.author1_line.setText(" Выиграл второй игрок")
+            self.author1_line.setText(" Выиграл бот")
             self.continue_btn.clicked.disconnect(self.bot_turn)
 
         self.author2_line.setText(" Хотите начать заново?")

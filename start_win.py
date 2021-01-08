@@ -7,7 +7,7 @@ import start_layout
 import PVP
 import PVE
 
-version = "v1.0.1"
+version = "v1.0.2 BETA"
 
 
 # Данный класс отвечает за первое (начальное) окно
@@ -41,7 +41,7 @@ class StartWin(QtWidgets.QMainWindow, start_layout.Ui_MainWindow):
                                                    )
                 self.main_win_pve.show()
 
-            elif self.AI_or_player == 1:
+            if self.AI_or_player == 1:
                 self.main_win_pvp = PVP.MainWinPVP(self.quantity_matches  # создание экземпляра класса MainWinPVP с
                                                    )  # данными о выборах игрока
                 self.main_win_pvp.show()  # показ main_win_pvp
